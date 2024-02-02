@@ -7,21 +7,14 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // возвращается AsyncValue - что я вляется улучшенной версией асинхронного снимка
-    // или AsyncSnapshot у FutureBuilder
-    final user = ref.watch(fetchUserProvider);
-
-    // user.asData - возвращает AsyncData а хотелось бы напрямую получить доступ к данным
-    // или доступ к ошибкам для их обработки поэтому мы применяем следующую запись ниже.
-    // метод when использует pattern matching или шаблон сопоставления с образцом
-    // чтобы сопоставить результат AsyncValue (data, error, loading) с нашим польз-им инт-ом
-    // и эти состояния уже взаимосвязаны между собой
-
-    // если мы не хотим обрабатывать ошибки или loading то можно юзать метод .whenData()
-    // также есть метод .map который возвращает не прямые данные а асинхронные (AsyncData etc.)
-    return user.when(
+    // поток возвращает AsyncValue
+    final streamNumber = ref.watch(streamProvider);
+    // обработка состояния в стрим провайдере происходит точно так как и в FutureProvider
+    // таким орбазом StreamProvider заменяет собой StreamBuilder, что даёт свои преимущества
+    // например гарантию правильной обработки состояний в случае загрузки или ошибок
+    // благодаря возвращаемому AsyncValue.
+    return streamNumber.when(
       data: (data) {
-        // тут мы получаем простые данные которые мы можем отобразить на экране
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -32,7 +25,7 @@ class MyHomePage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  data.name,
+                  data.toString(),
                 ),
               ],
             ),
@@ -54,35 +47,5 @@ class MyHomePage extends ConsumerWidget {
         );
       },
     );
-
-    // реализация FutureBuilder
-    // AsyncSnapshot позволяет обрабатывать ConnectionState, данные, ошибка
-    // Асинхронный снимок предполагает что все эти состояния не взаимосвязаны
-    // друг с другом, они независимы друг от друга
-    // ну хотя hasData и hasError вроде как имеют связь между собой
-    // Так что это не самый чистый способ обработки состояния
-    // Но при использовании AsyncValue это можно сделать лучше и правильнее
-
-    // return FutureBuilder(
-    //     future: future,
-    //     initialData: initialData,
-    //     builder: ((context, snapshot) {
-    //       // Если данные ещё не поступили в snapshot
-    //       if (snapshot.connectionState == ConnectionState.waiting) {
-    //         // Здесь отображаем индикатор загрузки
-    //       }
-
-    //       // затем првоеряем есть ли данные в Snapshot
-    //       if (snapshot.hasData) {
-    //         // если данные есть, то отображаем их
-    //       } else {
-    //         // если нет, то что-нибудь отображаем
-    //       }
-    //       // затем првоеряем содержит ли snapshot ошибку
-    //       if (snapshot.hasError) {
-    //         // если да то отображаем её
-    //       }
-    //       return;
-    //     }));
   }
 }

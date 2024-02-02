@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_flutter/home_page.dart';
-import 'package:riverpod_flutter/user.dart';
 
 // Providers
 // Provider
@@ -9,17 +8,16 @@ import 'package:riverpod_flutter/user.dart';
 // StateNotifier & StateNotifierProvider
 // ChangeNotifierProvider
 // FutureProvider
+// StreamProvider
 
 
-final fetchUserProvider = FutureProvider((ref) {
-  //return UserRepository().fetchUserData();
-  final userRepository = ref.watch(userRepositoryProvider);
-  // то есть использование метода ref.watch гарантирует что FutureProvider обновиться 
-  // когда првоайдер от которого мы зависим - измениться
-  // в результате все зависимые виджеты и провайдеры тоже перестрояться
-  // таким образом ProviderRef помогает нам взаимодействовать с другим провайдером
-  // через ref
-  return userRepository.fetchUserData();
+final streamProvider = StreamProvider((ref) {
+  // Stream.periodic будет передавать значение в поток каждый перод (то есть 1 сек)
+  // возвращаем computationCount
+  return Stream.periodic(
+    const Duration(seconds: 1),
+    ((computationCount) => computationCount),
+  );
 });
 
 void main() {
