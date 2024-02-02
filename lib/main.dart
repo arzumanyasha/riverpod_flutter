@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_flutter/home_page.dart';
+import 'package:riverpod_flutter/user.dart';
 
 // Providers
 // Provider
 // StateProvider
+// StateNotifier & StateNotifierProvider
 
-// Все объявленные провайдеры должны быть всегда final, то есть они должны быть неизменяемыми.
-// самый простой тип провайдера. Он предоставляет объект который никогда не меняется
-// ref - ссылка на провайдер, которая позволит нам общаться с другими провайдерами
-// Provider возвращает тип по умолчанию Null если мы туда ничего не передадит (= return null;)
-// тип провайдера можно также явно указать, Provider<String> например
-// Это глобальный провайдер, поэтому мы можем его прочитать в любом файле
-// Провайдер доступен только для чтения
-// можно использовать например для доступа к репозиторию или чтению логов
-
-// Есть 3 способа прочитать наш nameProvider
-final nameProvider = Provider((ref) {
-  return 'Privet';
+// в качестве первого возвращаемого типа мы сначала передадим UserNotifier
+// а в качестве второго типа мы передадим состояние класса UserNotifier - то есть User
+final userProvider = StateNotifierProvider<UserNotifier, User>((ref) {
+  //* return UserNotifier(const User(name: '', age: 0)); *//
+  // Допустим мы не хотим передавать в UserNotifier какое-либо состояние 
+  // то есть оставим конструктор пустым. Продолжение модификаций в классе User 
+  // пометка 112
+  return UserNotifier();
 });
 
-// а что если мы хотим менять значение провайдера?
-// для этого есть StateProvider который отлично подходит для хранения простых объектов состояния,
-// которые могут изменятся извне
-final nameStateProvider = StateProvider<String?>((ref) => null);
-// null изначально возвращаемое значение
+// у нас есть класс User. Допустим в этой модели мы хотим поменять значения у этих 2 свойств
+// да, можно конечно обновить состояние этих двух свойств с помощью StateProvider
+// но тогда наша логика будет находится в общих виджетах homa_page
+// а такого не хотелось бы да и в реальном мире свойств всегда гораздо больше 
+// Решение - улучшенная версия StateProvider - комбинация StateNotifier & StateNotifierProvider
+// они идеально подходят для управления состоянием, которое может измениться в ответ на событие 
+// или взаимодействие с пользователем
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
