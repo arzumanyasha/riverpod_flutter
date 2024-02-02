@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -68,5 +67,29 @@ class UserNotifier extends StateNotifier<User> {
 
   void updateAge(int age) {
     state = state.copyWith(age: age);
+  }
+}
+
+// ChangeNotifier класс встроенный во флаттер сдк
+// ChangeNotifier предоставляет своим слушателям уведомления об изменении состояния
+// которые могут произойти в классе 
+// Здесь состояние мы должны создать самостоятельно в отличии от StateNotifier
+// в котором можно было нагенерить методы
+class UserNotifierChange extends ChangeNotifier {
+  // здесь мы рассматриваем пользователя как переменную состояния
+  // в классе UserNotifier мы сделали то же самое, однако вместо того чтобы создавать 
+  // пользовательскую переменную StateNotifier сделал это за нас
+  User user = const User(name: '', age: 0);
+
+  void updateName(String n) {
+    user = user.copyWith(name: n);
+    // когда этот метод вызовется он уведомит всех клиентов, которые его слушают
+    // а его слушает метод ref.watch()
+    notifyListeners();
+  }
+
+  void updateAge(int age) {
+    user = user.copyWith(age: age);
+    notifyListeners();
   }
 }

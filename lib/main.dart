@@ -7,9 +7,13 @@ import 'package:riverpod_flutter/user.dart';
 // Provider
 // StateProvider
 // StateNotifier & StateNotifierProvider
+// ChangeNotifierProvider
 
-final userProvider = StateNotifierProvider<UserNotifier, User>((ref) {
-  return UserNotifier();
+// final userProvider = StateNotifierProvider<UserNotifier, User>((ref) {
+//   return UserNotifier();
+// });
+final userChangeNotifierProvider = ChangeNotifierProvider((ref) {
+  return UserNotifierChange();
 });
 
 void main() {
