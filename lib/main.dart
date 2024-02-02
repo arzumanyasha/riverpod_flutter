@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_flutter/home_page.dart';
 import 'package:riverpod_flutter/user.dart';
-import 'package:http/http.dart' as http;
 
 // Providers
 // Provider
@@ -12,17 +11,15 @@ import 'package:http/http.dart' as http;
 // FutureProvider
 
 
-// по умолчанию возвращает тип null
-// FutureProvider возвращает тип Response хотя наш гет запрос возвращает Future<Response>
-// поскольку мы находимся в провайдере то он просто проигнорирует Fututre 
-// и вернёт нам Response проинкапсулировнном в FutureProvider
-
-// Смысла обрабатывать ошибки через встраивание в цепочку в конце .catchError() 
-// не имеет смысла так как FutureProvider является лучшей заменой FutureBuilder'a
-// и всё будем улавливать в пользовательском интерфейсе
 final fetchUserProvider = FutureProvider((ref) {
-  const url = 'http://jsonplaceholder.typicode.com/users/1';
-  return http.get(Uri.parse(url)).then((value) => User.fromJson(value.body));
+  //return UserRepository().fetchUserData();
+  final userRepository = ref.watch(userRepositoryProvider);
+  // то есть использование метода ref.watch гарантирует что FutureProvider обновиться 
+  // когда првоайдер от которого мы зависим - измениться
+  // в результате все зависимые виджеты и провайдеры тоже перестрояться
+  // таким образом ProviderRef помогает нам взаимодействовать с другим провайдером
+  // через ref
+  return userRepository.fetchUserData();
 });
 
 void main() {
