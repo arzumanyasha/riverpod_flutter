@@ -14,8 +14,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // теперь наш провайдер поход на метод в который мы можем передать userID
-    final user = ref.watch(userFutureProvider(userId));
+    final user = ref.watch(fetchUserProvider(userId: userId, intValue: 1, boolValue: false));
     return user.when(
       data: (data) {
         return Scaffold(
